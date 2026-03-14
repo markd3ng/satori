@@ -165,15 +165,15 @@ function getCombinedText(title?: string, contents?: string): string {
   return lines.join('\n')
 }
 
-async function fetchPublicFont(
-  origin: string,
-  fileName: string
-): Promise<ArrayBuffer> {
-  const key = `${origin}/${fileName}`
+const INTER_FONT_URL =
+  'https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/files/'
+
+async function fetchPublicFont(fileName: string): Promise<ArrayBuffer> {
+  const key = fileName
   if (!baseFontCache.has(key)) {
     baseFontCache.set(
       key,
-      fetch(`${origin}/${fileName}`).then(async (res) => {
+      fetch(`${INTER_FONT_URL}${fileName}`).then(async (res) => {
         if (!res.ok) {
           throw new Error(`Failed to load ${fileName}: ${res.status}`)
         }
@@ -228,19 +228,9 @@ async function fetchGoogleFont(
   return cached
 }
 
-async function buildFonts(
-  origin: string,
-  text: string,
-  options: RauchgOptions
-) {
-  const interRegular = await fetchPublicFont(
-    origin,
-    'inter-latin-ext-400-normal.woff'
-  )
-  const interBold = await fetchPublicFont(
-    origin,
-    'inter-latin-ext-700-normal.woff'
-  )
+async function buildFonts(text: string, options: RauchgOptions) {
+  const interRegular = await fetchPublicFont('inter-latin-ext-400-normal.woff')
+  const interBold = await fetchPublicFont('inter-latin-ext-700-normal.woff')
 
   const fonts: Font[] = [
     { name: 'Inter', data: interRegular, weight: 400, style: 'normal' },
@@ -536,10 +526,8 @@ export default async function handler(req: NextRequest) {
 
     const options = parseOptions(merged)
     const contentText = getCombinedText(options.title, options.contents)
-    const origin = req.nextUrl.origin
 
     const fonts = await buildFonts(
-      origin,
       `${options.badgeText} ${contentText}`,
       options
     )
