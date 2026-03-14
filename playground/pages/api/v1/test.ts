@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import React from 'react'
-import satori from 'satori'
+import satori from 'satori/standalone'
 
 export const config = {
   runtime: 'experimental-edge',
