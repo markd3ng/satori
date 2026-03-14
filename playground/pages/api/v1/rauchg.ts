@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import React from 'react'
-import satori from 'satori/standalone'
+import satori, { type Font, type FontWeight } from 'satori/standalone'
 
 import { languageFontMap } from '../../../utils/font'
 import { apis, getIconCode, loadEmoji } from '../../../utils/twemoji'
@@ -242,13 +242,7 @@ async function buildFonts(
     'inter-latin-ext-700-normal.woff'
   )
 
-  const fonts: Array<{
-    name: string
-    data: ArrayBuffer
-    weight?: number
-    style?: 'normal' | 'italic'
-    lang?: string
-  }> = [
+  const fonts: Font[] = [
     { name: 'Inter', data: interRegular, weight: 400, style: 'normal' },
     { name: 'Inter', data: interBold, weight: 700, style: 'normal' },
   ]
@@ -311,7 +305,7 @@ async function loadAdditionalAsset(
     .map((item) => ({
       name: item.family,
       data: item.data,
-      weight: 400,
+      weight: 400 as const,
       style: 'normal' as const,
     }))
 }
