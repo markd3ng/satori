@@ -9,6 +9,9 @@
     "*": {
       "wasm": [
         "./dist/index.d.ts"
+      ],
+      "standalone": [
+        "./dist/standalone.d.ts"
       ]
     }
   },
